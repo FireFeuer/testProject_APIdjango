@@ -3,6 +3,7 @@ from pages.models import Company
 from pages.models import Address
 
 
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
@@ -15,3 +16,4 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name_company', 'name_person', 'surname', 'patronymic', 'phone', 'email', 'web_link', 'address', 'address_id')
+
