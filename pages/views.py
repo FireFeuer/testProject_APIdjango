@@ -5,30 +5,29 @@ from pages.models import Address
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from django.shortcuts import get_object_or_404
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import BaseAuthentication
+from rest_framework import exceptions
+
 
 class CompanyListView(APIView):
+
+    
     serializer_class = CompanySerializer
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         companies = Company.objects.all().prefetch_related('address')
         serializer = CompanySerializer(companies, many=True)
         return Response({'company': serializer.data})
     
-
-# class CompanyDetailView(APIView):
-#     serializer_class = CompanySerializer
-#     lookup_field = 'id'
-#     def get_object(self):
-#        pk = self.kwargs['pk']
-#        return Company.objects.get(id=pk)
-#     def get(self, request, pk, format=None):
-#         company = self.get_object()
-#         serializer = CompanySerializer(company)
-#         return Response(serializer.data)
     
 class CompanyCreateAPIView(generics.GenericAPIView):
+
+    
     serializer_class = CompanySerializer
+    permission_classes = (IsAuthenticated,)
     
     def post(self, request):
         data = request.data
@@ -54,7 +53,10 @@ class CompanyCreateAPIView(generics.GenericAPIView):
         return Response(data)
     
 class CompanyUpdateAPIView(generics.UpdateAPIView):
+
+    
     queryset = Company.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = CompanySerializer
 
     def update(self, request, *args, **kwargs):
@@ -81,7 +83,6 @@ class CompanyUpdateAPIView(generics.UpdateAPIView):
         building_number = data['address.building_number']
         postal_code = data['address.postal_code']
 
-        # Получаем адрес, связанный с компанией
         address = company.address
         address.city = city
         address.street = street
@@ -107,9 +108,15 @@ class CompanyUpdateAPIView(generics.UpdateAPIView):
     
 
 class CompanyDeleteAPIView(generics.DestroyAPIView):
+
+
     queryset = Company.objects.all()
+    permission_classes = (IsAuthenticated,)
     lookup_field = 'id'
     def destroy(self, request, *args, **kwargs):
         obj = self.get_object()
         obj.delete()
         return Response("Объект успешно удален")
+    
+
+

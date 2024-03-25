@@ -1,4 +1,14 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.conf import settings
+import jwt
+from datetime import datetime, timedelta
+from django.conf import settings 
+from django.contrib.auth.models import (
+	AbstractBaseUser, BaseUserManager, PermissionsMixin
+)
 
 
 class Address(models.Model):
@@ -25,3 +35,14 @@ class Company(models.Model):
     class Meta:
         app_label = 'companysAPIdjango'
         db_table = 'company'
+
+
+
+
+        
+
+
+
+
+
+   
